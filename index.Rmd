@@ -13,7 +13,7 @@ output:
 
 # **Introduction**
 
-In this analysis, we will **reclassify a Digital Elevation Model (DEM) raster** to generate several cost rasters based on resistance to movement. The values are derived from the work of *Flantua et al.* (paramo regions), considering the different zones that occurred during the Pleistocene climatic fluctuations: **paramos** (700m), **subparamos** (200m), and **superparamos** (300m). This code serves as an example for reclassifying other types of digital elevation models and can be applied more broadly for various ecological and geographical analyses. The original DEM raster used in this analysis, in ".asc" format, is provided in the Documents section. While the primary focus is on paramo ecosystems, the code can be adapted for different elevation-based models to suit other types of studies, demonstrating its versatility.
+In this analysis, we will **reclassify a Digital Elevation Model (DEM) raster** to generate several cost rasters based on resistance to movement. The values are derived from the work of *Flantua et al.* (paramo regions), considering the different zones that occurred during the Pleistocene climatic fluctuations: **paramos** (700m), **subparamos** (200m), and **superparamos** (300m). This code serves as an example for reclassifying other types of digital elevation models and can be applied more broadly for various ecological and geographical analyses. The original DEM raster used in this analysis, in ".asc" format, is provided in the Documents section. While the primary focus is on paramo ecosystems, the code can be adapted for different elevation-based models to suit other types of studies.
 
 ## **Elevation Ranges**
 
@@ -70,7 +70,7 @@ crs(elevation_raster) <- "+proj=longlat +datum=WGS84 +no_defs"
 
 ## **Reclassification Process**
 
-We will now iterate over each elevation range to reclassify the DEM into cost rasters. These rasters will assign resistance values based on elevation, simulating different terrain conditions.
+We will now iterate over each elevation range to reclassify the DEM into cost rasters. These rasters will assign resistance values based on elevation.
 
 ```{r eval=FALSE, include=TRUE}
 # Create a list to store the reclassified rasters
@@ -170,7 +170,7 @@ for (i in seq_along(elevation_ranges)) {
 
 ## **Saving the Reclassified Rasters**
 
-Finally, we save all the reclassified rasters to a specified folder. The files are saved in GeoTIFF format, which is commonly used for geospatial data.
+Finally, we save all the reclassified rasters to a specified folder. The files are saved in GeoTIFF format.
 
 ```{r eval=FALSE, include=TRUE}
 # Iterate over the elevation ranges and reclassified rasters

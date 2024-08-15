@@ -397,7 +397,7 @@ more broadly for various ecological and geographical analyses. The
 original DEM raster used in this analysis, in “.asc” format, is provided
 in the Documents section. While the primary focus is on paramo
 ecosystems, the code can be adapted for different elevation-based models
-to suit other types of studies, demonstrating its versatility.</p>
+to suit other types of studies.</p>
 <div id="elevation-ranges" class="section level2">
 <h2><strong>Elevation Ranges</strong></h2>
 <p>The elevation ranges used for the reclassification are defined in the
@@ -449,7 +449,7 @@ reclassification process.</p>
 <h2><strong>Reclassification Process</strong></h2>
 <p>We will now iterate over each elevation range to reclassify the DEM
 into cost rasters. These rasters will assign resistance values based on
-elevation, simulating different terrain conditions.</p>
+elevation.</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a list to store the reclassified rasters</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>reclassified_rasters <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -546,8 +546,7 @@ elevation, simulating different terrain conditions.</p>
 <div id="saving-the-reclassified-rasters" class="section level2">
 <h2><strong>Saving the Reclassified Rasters</strong></h2>
 <p>Finally, we save all the reclassified rasters to a specified folder.
-The files are saved in GeoTIFF format, which is commonly used for
-geospatial data.</p>
+The files are saved in GeoTIFF format.</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Iterate over the elevation ranges and reclassified rasters</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(elevation_ranges)) {</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Select the current reclassified raster</span></span>
