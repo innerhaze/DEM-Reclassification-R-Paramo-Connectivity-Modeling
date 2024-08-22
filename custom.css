@@ -1,7 +1,0 @@
-.sidebar-image {
-    position: fixed;
-    left: 120px;
-    top: 420px; /* Ajusta esta distancia según la altura de tu barra de navegación */
-    width: 150px; /* Ajusta el tamaño según tus necesidades */
-    z-index: 1000;
-}

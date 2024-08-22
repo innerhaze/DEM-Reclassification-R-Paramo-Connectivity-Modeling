@@ -3,7 +3,7 @@
     "path": "~/GitHub/DEM-Reclassification-R-Paramo-Connectivity-Modeling/_site.yml",
     "project_path": "_site.yml",
     "type": "yaml",
-    "hash": "0",
+    "hash": "3779024821",
     "contents": "",
     "dirty": false,
     "created": 1723680942444.0,
@@ -12,15 +12,15 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "6,0",
+        "cursorPosition": "3,11",
         "scrollLine": "0"
     },
     "folds": "",
-    "lastKnownWriteTime": 1724291887,
+    "lastKnownWriteTime": 1724295356,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1724291887119,
+    "last_content_update": 1724295356037,
     "read_only": false,
     "read_only_alternatives": []
 }

@@ -12,12 +12,8 @@ output:
       position: "left"
     theme: flatly
     highlight: tango
-    css: custom.css
----
 
-<div class="sidebar-image">
-  <img src="Imagen1.jpg" alt="Description of Image">
-</div>
+---
 
 ## **Introduction**
 
