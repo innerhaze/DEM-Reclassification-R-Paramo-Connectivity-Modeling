@@ -1,0 +1,211 @@
+---
+title: "Reclassifying a Digital Elevation Model in R for Connectivity Modeling: A Páramo Example Based on Paleoclimatic Data"
+author: "Sebastián Sánchez Cuartas"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output: 
+  html_document:
+    toc: true
+    toc_depth: 2
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+      position: "left"
+    theme: flatly
+    highlight: tango
+
+---
+
+## **Introduction**
+
+In this analysis, we will **reclassify a Digital Elevation Model (DEM) raster** to generate several cost rasters based on resistance to movement. The values are derived from the work of *Flantua et al.* (paramo regions), considering the different zones that occurred during the Pleistocene climatic fluctuations: **paramos** (700m), **subparamos** (200m), and **superparamos** (300m). This code serves as an example for reclassifying other types of digital elevation models and can be applied more broadly for various ecological and geographical analyses. The original DEM raster used in this analysis, in ".asc" format, is provided in the Documents section. While the primary focus is on paramo ecosystems, the code can be adapted for different elevation-based models to suit other types of studies.
+
+## **Elevation Ranges**
+
+The elevation ranges used for the reclassification are defined in the following list:
+
+```{r eval=FALSE, include=TRUE}
+elevation_ranges <- list(
+  c(2000, 2700),
+  c(2100, 2800),
+  c(2200, 2900),
+  c(2300, 3000),
+  c(2400, 3100),
+  c(2500, 3200),
+  c(2600, 3300),
+  c(2700, 3400),
+  c(2800, 3500),
+  c(2900, 3600),
+  c(3000, 3700),
+  c(3100, 3800),
+  c(3200, 3900),
+  c(3300, 4000),
+  c(3400, 4100),
+  c(3500, 4200),
+  c(3600, 4300),
+  c(3700, 4400),
+  c(3800, 4500),
+  c(3900, 4600),
+  c(4000, 4700),
+  c(4100, 4800)
+)
+
+```
+
+## **Loading the Elevation Raster**
+
+First, let's load the **Digital Elevation Model (DEM) raster**. This raster will be used as the basis for our reclassification process.
+
+```{r eval=FALSE, include=TRUE}
+
+# Loading the required package
+
+library(raster)
+
+# Load the elevation raster
+
+elevation_raster <- raster("path/to/your/elevation_raster.asc")
+
+# Assign a coordinate reference system (CRS) to the raster
+# This ensures that the geographic coordinates are correctly interpreted.
+
+crs(elevation_raster) <- "+proj=longlat +datum=WGS84 +no_defs"
+
+```
+
+## **Reclassification Process**
+
+We will now iterate over each elevation range to reclassify the DEM into cost rasters. These rasters will assign resistance values based on elevation.
+
+```{r eval=FALSE, include=TRUE}
+# Create a list to store the reclassified rasters
+reclassified_rasters <- list()
+
+# Define the width of the transition zone
+transition_width <- 100  # Width of the gradual transition zone (in meters)
+
+# Iterate over all elevation ranges in the list
+for (i in seq_along(elevation_ranges)) {
+  # Take the current elevation range
+  elevation_range <- elevation_ranges[[i]]
+  
+  # Define the reclassification limits for the current range
+  lower_limit <- elevation_range[1]
+  upper_limit <- elevation_range[2]
+  
+  
+  # The following code block uses the `xyFromCell` function from the `raster` package to extract the spatial coordinates (x, y) of each cell in an elevation raster. These coordinates are stored in a matrix called `raster_coordinates`, where each row represents a cell of the raster, and the columns contain the corresponding geographic coordinates.
+  
+  # Using `raster::extract` along with `raster::xyFromCell` in the same line allows you to directly extract the values of all raster cells at their respective locations.
+  
+  elevation_values <- raster::extract(elevation_raster, raster::xyFromCell(elevation_raster, 1:ncell(elevation_raster)))
+  
+  # If there is at least one non-NA elevation value, proceed with the reclassification
+  if (any(!is.na(elevation_values))) {
+    # Create a raster with the same dimensions and extent as the elevation raster
+    reclassified_raster <- raster::raster(elevation_raster)
+    
+    ########################### PÁRAMO (GRASSLANDS) ###############################
+    
+    # Assign value 1 for the range defined by the paramo strips
+    reclassified_raster[elevation_raster >= lower_limit & 
+                        elevation_raster <= upper_limit] <- 1
+    
+    ####################### SUPERPARAMO (HIGH GRASSLANDS) ######################### 
+    
+    # Assign gradually increasing penalty values above the range
+    penalty <- 2
+    
+    # This code reclassifies the raster "reclassified_raster" by assigning penalty values that gradually increase as you move towards higher elevation ranges. The elevation range that is reclassified is limited to 200 meters above the original range, and a while loop is used to apply this reclassification iteratively until that limit is reached.
+    
+    while ((upper_limit + transition_width) <= (elevation_range[2] + 200)) {
+      reclassified_raster[elevation_raster > upper_limit & 
+                          elevation_raster <= (upper_limit + transition_width)] <- penalty
+      penalty <- penalty + 2 # Increase the penalty
+      upper_limit <- upper_limit + transition_width # New upper limit
+    }
+    
+    # This code block continues the reclassification of the raster by assigning progressively increasing penalty values to cells with higher elevations. The process begins at 200 meters above the initial range and continues up to the maximum elevation value in the raster. As the upper limit increases by 100 meters with each iteration, the penalty also increases, starting at 7 and adding 3 at each step.
+    
+    penalty <- 7 # After penalizing +1 (within the range) +2 (first 100m after the upper limit) and +2 (corresponding to a value of 4 for the second 100m after the updated limit), the next pixel starts with a value of 7, as it begins to add +3 here until reaching the maximum limit of the raster.
+    
+    while (upper_limit <= max(elevation_values, na.rm = TRUE)) {
+      reclassified_raster[elevation_raster > upper_limit] <- penalty
+      penalty <- penalty + 3 # Increase the penalty
+      upper_limit <- upper_limit + 100  # Increase the upper limit by 100 meters
+    }
+    
+    # Reset the limits for the second part of the loop that handles the lower limit
+    lower_limit <- elevation_range[1]
+    upper_limit <- elevation_range[2]
+    
+    ########################  SUBPARAMO (LOW GRASSLANDS) ########################## 
+    
+    # Assign gradually increasing penalty values below the range
+    penalty <- 2
+    
+    # This code block reclassifies the raster "reclassified_raster" by assigning penalty values that gradually increase as you move towards lower elevation ranges. The elevation range that is reclassified is limited to 300 meters below the original range, and a while loop is used to apply this reclassification iteratively until that limit is reached.
+    
+    while ((lower_limit - transition_width) >= (elevation_range[1] - 300)) {
+      reclassified_raster[elevation_raster < lower_limit & 
+                          elevation_raster >= (lower_limit - transition_width)] <- penalty
+      penalty <- penalty + 2 # Increase the penalty
+      lower_limit <- lower_limit - transition_width
+    }
+    
+    # This code block continues the reclassification of the raster by assigning progressively increasing penalty values to cells with lower elevations. The process begins at 300 meters below the initial range and continues up to the minimum elevation value in the raster. As the lower limit decreases by 100 meters with each iteration, the penalty also increases, starting at 9 and adding 3 at each step.
+    
+    penalty <- 9   # After penalizing +1 (within the range) +2 (first 100m after the upper limit) and +2 (corresponding to a value of 4 for the second 100m after the updated limit) and +2 (corresponding to a value of 6 for the third 100m after the updated limit), the next pixel starts with a value of 9, as it begins to add +3 here until reaching the maximum limit of the raster.
+    
+    while (lower_limit >= min(elevation_values, na.rm = TRUE)) {
+      reclassified_raster[elevation_raster < lower_limit] <- penalty
+      penalty <- penalty + 3 # Increase the penalty
+      lower_limit <- lower_limit - 100  # Decrease the lower limit by 100 meters
+    }
+    
+    # Add the reclassified raster to the list
+    reclassified_rasters[[i]] <- reclassified_raster
+  } else {
+    # If all elevation values are NA, add a NA raster to the list
+    reclassified_rasters[[i]] <- raster::raster(elevation_raster)
+  }
+}
+
+```
+
+## **Saving the Reclassified Rasters**
+
+Finally, we save all the reclassified rasters to a specified folder. The files are saved in GeoTIFF format.
+
+```{r eval=FALSE, include=TRUE}
+# Iterate over the elevation ranges and reclassified rasters
+for (i in seq_along(elevation_ranges)) {
+  # Select the current reclassified raster
+  reclassified_raster <- reclassified_rasters[[i]]
+  
+  # Get the corresponding elevation range
+  range_value <- elevation_ranges[[i]]
+  
+  # Generate the output file name
+  output_filename <- paste0("path/to/output/directory/RC_", range_value[1], "_", range_value[2], ".tif")
+  
+  # Write the raster in GeoTIFF format
+  writeRaster(reclassified_raster, filename = output_filename, format = "GTiff", overwrite = TRUE)
+}
+
+```
+
+## **Results Visualization**
+
+The following image shows the resulting rasters generated for different paramo elevation ranges. This visualization illustrates how the output rasters appear and how they represent various paramo zones based on the defined elevation ranges.
+
+```{r echo=FALSE, fig.align='center', fig.cap="*Rasters generated for different paramo elevation ranges. Above each plot, the range in meters above sea level for the grass paramo strip is shown, and to the right, a bar with the costs for all rasters is included.*", out.width='65%'}
+knitr::include_graphics("Mosaico.jpg")
+```
+
+## **Conclusion**
+
+This process enables the creation of various cost rasters by reclassifying a DEM based on specific elevation ranges. These rasters can be utilized in studies of functional connectivity, specifically for paramo species. The model provides a generalized cost raster suitable for assessing the potential mobility of paramo organisms, based on the paramo zones defined by the paleoclimatic model of *Flantua et al.* (2019). Although the raster is less precise, it is adequately designed to represent the potential movement corridors within the paramo ecosystem. Additionally, this code can be employed as a template for reclassifying other digital elevation models, showcasing its adaptability for different types of connectivity and movement studies.
+
+## **References**
+
+Flantua, S. G. A., O'Dea, A., Onstein, R. E., Hooghiemstra, H., & Hoorn, C. (2019). The flickering connectivity system of the north Andean páramos. *Journal of Biogeography, 46*(8), 1808-1825.
