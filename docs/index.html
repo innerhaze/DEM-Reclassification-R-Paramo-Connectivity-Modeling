@@ -431,13 +431,13 @@ div.tocify {
 R for Connectivity Modeling: A Páramo Example Based on Paleoclimatic
 Data</h1>
 <h4 class="author">Sebastián Sánchez Cuartas</h4>
-<h4 class="date">agosto 21, 2024</h4>
 
 </div>
 
 
+<hr />
 <div id="introduction" class="section level2">
-<h2><strong>Introduction</strong></h2>
+<h2><strong>1. Introduction</strong></h2>
 <p>In this analysis, we will <strong>reclassify a Digital Elevation
 Model (DEM) raster</strong> to generate several cost rasters based on
 resistance to movement. The values are derived from the work of
@@ -451,9 +451,10 @@ original DEM raster used in this analysis, in “.asc” format, is provided
 in the Documents section. While the primary focus is on paramo
 ecosystems, the code can be adapted for different elevation-based models
 to suit other types of studies.</p>
+<hr />
 </div>
 <div id="elevation-ranges" class="section level2">
-<h2><strong>Elevation Ranges</strong></h2>
+<h2><strong>2. Elevation Ranges</strong></h2>
 <p>The elevation ranges used for the reclassification are defined in the
 following list:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>elevation_ranges <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
@@ -480,9 +481,10 @@ following list:</p>
 <span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="dv">4000</span>, <span class="dv">4700</span>),</span>
 <span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="dv">4100</span>, <span class="dv">4800</span>)</span>
 <span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<hr />
 </div>
 <div id="loading-the-elevation-raster" class="section level2">
-<h2><strong>Loading the Elevation Raster</strong></h2>
+<h2><strong>3. Loading the Elevation Raster</strong></h2>
 <p>First, let’s load the <strong>Digital Elevation Model (DEM)
 raster</strong>. This raster will be used as the basis for our
 reclassification process.</p>
@@ -498,9 +500,10 @@ reclassification process.</p>
 <span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co"># This ensures that the geographic coordinates are correctly interpreted.</span></span>
 <span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="fu">crs</span>(elevation_raster) <span class="ot">&lt;-</span> <span class="st">&quot;+proj=longlat +datum=WGS84 +no_defs&quot;</span></span></code></pre></div>
+<hr />
 </div>
 <div id="reclassification-process" class="section level2">
-<h2><strong>Reclassification Process</strong></h2>
+<h2><strong>4. Reclassification Process</strong></h2>
 <p>We will now iterate over each elevation range to reclassify the DEM
 into cost rasters. These rasters will assign resistance values based on
 elevation.</p>
@@ -596,9 +599,10 @@ elevation.</p>
 <span id="cb3-90"><a href="#cb3-90" aria-hidden="true" tabindex="-1"></a>    reclassified_rasters[[i]] <span class="ot">&lt;-</span> raster<span class="sc">::</span><span class="fu">raster</span>(elevation_raster)</span>
 <span id="cb3-91"><a href="#cb3-91" aria-hidden="true" tabindex="-1"></a>  }</span>
 <span id="cb3-92"><a href="#cb3-92" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<hr />
 </div>
 <div id="saving-the-reclassified-rasters" class="section level2">
-<h2><strong>Saving the Reclassified Rasters</strong></h2>
+<h2><strong>5. Saving the Reclassified Rasters</strong></h2>
 <p>Finally, we save all the reclassified rasters to a specified folder.
 The files are saved in GeoTIFF format.</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Iterate over the elevation ranges and reclassified rasters</span></span>
@@ -615,9 +619,10 @@ The files are saved in GeoTIFF format.</p>
 <span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Write the raster in GeoTIFF format</span></span>
 <span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">writeRaster</span>(reclassified_raster, <span class="at">filename =</span> output_filename, <span class="at">format =</span> <span class="st">&quot;GTiff&quot;</span>, <span class="at">overwrite =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<hr />
 </div>
 <div id="results-visualization" class="section level2">
-<h2><strong>Results Visualization</strong></h2>
+<h2><strong>6. Results Visualization</strong></h2>
 <p>The following image shows the resulting rasters generated for
 different paramo elevation ranges. This visualization illustrates how
 the output rasters appear and how they represent various paramo zones
@@ -631,24 +636,10 @@ shown, and to the right, a bar with the costs for all rasters is
 included.</em>
 </p>
 </div>
-</div>
-<div id="conclusion" class="section level2">
-<h2><strong>Conclusion</strong></h2>
-<p>This process enables the creation of various cost rasters by
-reclassifying a DEM based on specific elevation ranges. These rasters
-can be utilized in studies of functional connectivity, specifically for
-paramo species. The model provides a generalized cost raster suitable
-for assessing the potential mobility of paramo organisms, based on the
-paramo zones defined by the paleoclimatic model of <em>Flantua et
-al.</em> (2019). Although the raster is less precise, it is adequately
-designed to represent the potential movement corridors within the paramo
-ecosystem. Additionally, this code can be employed as a template for
-reclassifying other digital elevation models, showcasing its
-adaptability for different types of connectivity and movement
-studies.</p>
+<hr />
 </div>
 <div id="references" class="section level2">
-<h2><strong>References</strong></h2>
+<h2><strong>7. References</strong></h2>
 <p>Flantua, S. G. A., O’Dea, A., Onstein, R. E., Hooghiemstra, H., &amp;
 Hoorn, C. (2019). The flickering connectivity system of the north Andean
 páramos. <em>Journal of Biogeography, 46</em>(8), 1808-1825.</p>

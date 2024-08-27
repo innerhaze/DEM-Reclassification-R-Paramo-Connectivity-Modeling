@@ -1,7 +1,7 @@
 ---
 title: "Reclassifying a Digital Elevation Model in R for Connectivity Modeling: A Páramo Example Based on Paleoclimatic Data"
 author: "Sebastián Sánchez Cuartas"
-date: "`r format(Sys.Date(), '%B %d, %Y')`"
+date: ""
 output: 
   html_document:
     toc: true
@@ -12,14 +12,17 @@ output:
       position: "left"
     theme: flatly
     highlight: tango
-
 ---
 
-## **Introduction**
+------------------------------------------------------------------------
+
+## **1. Introduction**
 
 In this analysis, we will **reclassify a Digital Elevation Model (DEM) raster** to generate several cost rasters based on resistance to movement. The values are derived from the work of *Flantua et al.* (paramo regions), considering the different zones that occurred during the Pleistocene climatic fluctuations: **paramos** (700m), **subparamos** (200m), and **superparamos** (300m). This code serves as an example for reclassifying other types of digital elevation models and can be applied more broadly for various ecological and geographical analyses. The original DEM raster used in this analysis, in ".asc" format, is provided in the Documents section. While the primary focus is on paramo ecosystems, the code can be adapted for different elevation-based models to suit other types of studies.
 
-## **Elevation Ranges**
+-----------------------------------------------------------------------------------------------
+
+## **2. Elevation Ranges**
 
 The elevation ranges used for the reclassification are defined in the following list:
 
@@ -51,7 +54,9 @@ elevation_ranges <- list(
 
 ```
 
-## **Loading the Elevation Raster**
+-----------------------------------------------------------------------------------------------
+
+## **3. Loading the Elevation Raster**
 
 First, let's load the **Digital Elevation Model (DEM) raster**. This raster will be used as the basis for our reclassification process.
 
@@ -72,7 +77,9 @@ crs(elevation_raster) <- "+proj=longlat +datum=WGS84 +no_defs"
 
 ```
 
-## **Reclassification Process**
+-----------------------------------------------------------------------------------------------
+
+## **4. Reclassification Process**
 
 We will now iterate over each elevation range to reclassify the DEM into cost rasters. These rasters will assign resistance values based on elevation.
 
@@ -172,7 +179,9 @@ for (i in seq_along(elevation_ranges)) {
 
 ```
 
-## **Saving the Reclassified Rasters**
+-----------------------------------------------------------------------------------------------
+
+## **5. Saving the Reclassified Rasters**
 
 Finally, we save all the reclassified rasters to a specified folder. The files are saved in GeoTIFF format.
 
@@ -194,7 +203,9 @@ for (i in seq_along(elevation_ranges)) {
 
 ```
 
-## **Results Visualization**
+-----------------------------------------------------------------------------------------------
+
+## **6. Results Visualization**
 
 The following image shows the resulting rasters generated for different paramo elevation ranges. This visualization illustrates how the output rasters appear and how they represent various paramo zones based on the defined elevation ranges.
 
@@ -202,10 +213,8 @@ The following image shows the resulting rasters generated for different paramo e
 knitr::include_graphics("Mosaico.jpg")
 ```
 
-## **Conclusion**
+-----------------------------------------------------------------------------------------------
 
-This process enables the creation of various cost rasters by reclassifying a DEM based on specific elevation ranges. These rasters can be utilized in studies of functional connectivity, specifically for paramo species. The model provides a generalized cost raster suitable for assessing the potential mobility of paramo organisms, based on the paramo zones defined by the paleoclimatic model of *Flantua et al.* (2019). Although the raster is less precise, it is adequately designed to represent the potential movement corridors within the paramo ecosystem. Additionally, this code can be employed as a template for reclassifying other digital elevation models, showcasing its adaptability for different types of connectivity and movement studies.
-
-## **References**
+## **7. References**
 
 Flantua, S. G. A., O'Dea, A., Onstein, R. E., Hooghiemstra, H., & Hoorn, C. (2019). The flickering connectivity system of the north Andean páramos. *Journal of Biogeography, 46*(8), 1808-1825.
